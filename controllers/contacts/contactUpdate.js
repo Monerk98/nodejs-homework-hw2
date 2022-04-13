@@ -1,9 +1,17 @@
-const { Contact } = require('../models')
+const { Contact } = require('../../models')
 
 const contactUpdate = async (req, res, next) => {
   try {
     const { contactId } = req.params
     const result = await Contact.findByIdAndUpdate(contactId, req.body, { new: true })
+    const auth = JSON.stringify(result.owner) === JSON.stringify(req.user._id)
+    if (!auth) {
+      res.status(401).json({
+        status: 'Unauthorized',
+        code: 401,
+      })
+      return
+    }
     if (!result) {
       res.status(400).json({
         status: 'error',

@@ -1,25 +1,19 @@
 const express = require('express')
 const router = express.Router()
-const {
-  getAllContacts,
-  getContactById,
-  deleteContactById,
-  addNewContact,
-  contactUpdate,
-  changeStatus
-} = require('../../controllers')
-const { validationMiddleware } = require('../../models/contact')
+const { contacts: ctrl } = require('../../controllers')
+const { validation, authenticate } = require('../../midlewares')
+const { joiContactSchema } = require('../../models')
 
-router.get('/', getAllContacts)
+router.get('/', authenticate, ctrl.getAllContacts)
 
-router.get('/:contactId', getContactById)
+router.get('/:contactId', authenticate, ctrl.getContactById)
 
-router.post('/', validationMiddleware, addNewContact)
+router.post('/', authenticate, validation(joiContactSchema), ctrl.addNewContact)
 
-router.delete('/:contactId', deleteContactById)
+router.delete('/:contactId', authenticate, ctrl.deleteContactById)
 
-router.put('/:contactId', validationMiddleware, contactUpdate)
+router.put('/:contactId', authenticate, validation(joiContactSchema), ctrl.contactUpdate)
 
-router.patch('/:contactId/favorite', changeStatus)
+router.patch('/:contactId/favorite', authenticate, ctrl.changeStatus)
 
 module.exports = router

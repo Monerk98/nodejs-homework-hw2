@@ -1,5 +1,5 @@
 const express = require('express')
-const { validation, authenticate } = require('../../midlewares')
+const { validation, authenticate, uploadAvatar } = require('../../midlewares')
 const { auth: ctrl } = require('../../controllers')
 const { joiUserSchema } = require('../../models')
 
@@ -12,5 +12,7 @@ router.post('/login', validation(joiUserSchema), ctrl.login)
 router.post('/logout', authenticate, ctrl.logout)
 
 router.get('/current', authenticate, ctrl.getCurrentUser)
+
+router.patch('/avatars', authenticate, uploadAvatar.single('avatarURL'), ctrl.updateAvatar)
 
 module.exports = router

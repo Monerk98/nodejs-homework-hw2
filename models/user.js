@@ -17,10 +17,21 @@ const userSchema = Schema({
     enum: ['starter', 'pro', 'business'],
     default: 'starter'
   },
+  avatarURL: {
+    type: String
+  },
   token: {
     type: String,
     default: null,
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    required: [true, 'Verify token is required'],
+  }
 }, { versionKey: false, timestamps: true })
 
 userSchema.methods.setPassword = function(password) {
@@ -33,7 +44,9 @@ userSchema.methods.comparePassword = function(password) {
 
 const joiUserSchema = Joi.object({
   email: Joi.string().required(),
-  password: Joi.string().min(6).required()
+  password: Joi.string().min(6).required(),
+  subscription: Joi.string(),
+  token: Joi.string()
 })
 
 const User = model('user', userSchema)

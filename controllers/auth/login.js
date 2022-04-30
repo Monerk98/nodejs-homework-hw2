@@ -7,6 +7,12 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body
     const user = await User.findOne({ email })
+    if (!user.verify) {
+      res.status(400).json({
+        status: 'You need to confirm your email!',
+        code: 400,
+      })
+    }
     if (!user || !user.comparePassword(password)) {
       res.status(400).json({
         status: 'Wrong email or password',
